@@ -236,7 +236,7 @@
                                 <rect key="frame" x="0.0" y="64" width="320" height="460"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tweetMainCell" rowHeight="166" id="1dm-bn-03x" customClass="TweetMainInfoCell" customModule="Twitters" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="tweetMainCell" rowHeight="166" id="1dm-bn-03x" customClass="TweetMainInfoCell" customModule="Twitters" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="320" height="166"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1dm-bn-03x" id="EdC-lp-rje">
@@ -298,7 +298,7 @@
                                             <outlet property="timeStampLabel" destination="wbM-Qn-knQ" id="RiT-xX-JJO"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tweetLikeCell" rowHeight="45" id="w5k-hD-hFV" customClass="TweetLikeInfoCell" customModule="Twitters" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="tweetLikeCell" rowHeight="45" id="w5k-hD-hFV" customClass="TweetLikeInfoCell" customModule="Twitters" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="194" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="w5k-hD-hFV" id="Zs6-Aj-KDs">
@@ -346,7 +346,7 @@
                                             <outlet property="retweetNo" destination="nGA-PY-bMJ" id="9hl-c2-var"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tweetActionCell" rowHeight="45" id="HSq-D1-wgL" customClass="TweetActionCell" customModule="Twitters" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="tweetActionCell" rowHeight="45" id="HSq-D1-wgL" customClass="TweetActionCell" customModule="Twitters" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="239" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HSq-D1-wgL" id="1hk-bi-oIU">

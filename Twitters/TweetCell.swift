@@ -8,6 +8,10 @@
 
 import UIKit
 
+@objc protocol TweetCellDelegate {
+    @objc optional func onFavouriteBtnClicked(id: String, position: Int)
+}
+
 class TweetCell: UITableViewCell {
     // View references
     @IBOutlet weak var avatarImage: UIImageView!
@@ -21,6 +25,8 @@ class TweetCell: UITableViewCell {
     @IBOutlet weak var imageHeightConstrain: NSLayoutConstraint!
     
     // Properties
+    var position: Int!
+    weak var vcDelegate: TweetCellDelegate!
     var tweet: Tweet! {
         didSet {
             nameLabel.text = tweet.user?.name
@@ -49,6 +55,7 @@ class TweetCell: UITableViewCell {
     }
     
     @IBAction func favBtnClicked(_ sender: UIButton) {
+        vcDelegate.onFavouriteBtnClicked!(id: tweet.id!, position: position)
     }
     
 

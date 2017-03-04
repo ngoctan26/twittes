@@ -70,10 +70,27 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
-    func createFavourite(id: Int, failure: @escaping (_ error: Error?) -> (), success: @escaping (_ success: Tweet) -> ()) {
+    func createFavourite(id: String, failure: @escaping (_ error: Error?) -> (), success: @escaping (_ success: Tweet) -> ()) {
         var parameters: [String : Any] = [:]
         parameters["id"] = id
         _ = post("1.1/favorites/create.json", parameters: parameters, success: { (_: URLSessionDataTask, response: Any?) in
+            if let response = response  {
+                print("update favourite response: \(response)")
+                let tweetRaw = response as! NSDictionary
+                let tweet = Tweet(dictionary: tweetRaw)
+                success(tweet)
+            }
+            
+        }, failure: { (_: URLSessionDataTask?, error: Error) in
+            print("\(error.localizedDescription)")
+            failure(error)
+        })
+    }
+    
+    func destroyFavourite(id: String, failure: @escaping (_ error: Error?) -> (), success: @escaping (_ success: Tweet) -> ()) {
+        var parameters: [String : Any] = [:]
+        parameters["id"] = id
+        _ = post("1.1/favorites/destroy.json", parameters: parameters, success: { (_: URLSessionDataTask, response: Any?) in
             if let response = response  {
                 print("update favourite response: \(response)")
                 let tweetRaw = response as! NSDictionary

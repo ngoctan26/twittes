@@ -20,10 +20,12 @@ class Tweet: NSObject {
     var retweetCount = 0
     var favCount = 0
     var favourited = false
+    var id: String?
     
     
     init(dictionary: NSDictionary) {
         print("Tweet raw value: \(dictionary)")
+        id = dictionary["id_str"] as? String
         user = User(dictionary: dictionary["user"] as! NSDictionary)
         text = dictionary["text"] as? String
         createdAtString = dictionary["created_at"] as? String

@@ -8,9 +8,16 @@
 
 import UIKit
 
+@objc protocol TweetActionCellDelegate {
+    @objc optional func onBtnFavouriteClicked()
+}
+
 class TweetActionCell: UITableViewCell {
     
     @IBOutlet weak var btnFav: UIButton!
+    
+    // Properties
+    var vcDelegate: TweetActionCellDelegate!
     
     @IBAction func replyClicked(_ sender: Any) {
     }
@@ -20,6 +27,7 @@ class TweetActionCell: UITableViewCell {
     }
 
     @IBAction func favClicked(_ sender: Any) {
+        vcDelegate.onBtnFavouriteClicked!()
     }
     
     

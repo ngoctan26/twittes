@@ -90,6 +90,7 @@ class TweetViewController: UIViewController {
             if let destinationVC = destinationVC {
                 destinationVC.tweetDetail = tweets[selectedIndex]
                 destinationVC.position = selectedIndex
+                destinationVC.vcDelegate = self
             }
         } else if segue.identifier == "newTweet" {
             let destinationVC = segue.destination as? NewTweetViewController
@@ -111,6 +112,8 @@ extension TweetViewController: UITableViewDataSource, UITableViewDelegate {
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         if tweets.count > 0 {
             cell.tweet = tweets[indexPath.row]
+            cell.position = indexPath.row
+            cell.vcDelegate = self
         }
         return cell;
     }
@@ -148,9 +151,37 @@ extension TweetViewController: UIScrollViewDelegate {
     }
 }
 
-extension TweetViewController: NewTweetViewControllerDelegate {
+/**
+ * Handle all delegate form other views
+ **/
+extension TweetViewController: NewTweetViewControllerDelegate, TweetCellDelegate, TweetDetailViewControllerDelegate {
     func onNewTweetPosted(newTweet: Tweet) {
         tweets.insert(newTweet, at: 0)
         tableView.reloadData()
+    }
+    
+    func onFavouriteBtnClicked(id: String, position: Int) {
+        let client = TwitterClient.instance!
+        let selectedTweet = tweets[position]
+        if selectedTweet.favourited {
+            client.destroyFavourite(id: selectedTweet.id!, failure: { (error) in
+                print("Destroy favourite failed: \(error?.localizedDescription)")
+            }, success: { (updatedTweet) in
+                self.tweets[position] = updatedTweet
+                self.tableView.reloadRows(at: [IndexPath(row: position, section: 0)], with: UITableViewRowAnimation.automatic)
+            })
+        } else {
+            client.createFavourite(id: selectedTweet.id!, failure: { (error) in
+                print("Update favourite failed: \(error?.localizedDescription)")
+            }, success: { (updatedTweet) in
+                self.tweets[position] = updatedTweet
+                self.tableView.reloadRows(at: [IndexPath(row: position, section: 0)], with: UITableViewRowAnimation.automatic)
+            })
+        }
+    }
+    
+    func onTweetDetailUpdate(position: Int, updatedTweet: Tweet) {
+        tweets[position] = updatedTweet
+        tableView.reloadRows(at: [IndexPath(row: position, section: 0)], with: UITableViewRowAnimation.automatic)
     }
 }
