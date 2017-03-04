@@ -32,10 +32,13 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
-    func homeTimeline(paging: Int, completion: @escaping  (_ error: Error?, _ tweetList: [Tweet]?) -> ()) {
+    func homeTimeline(paging: String?, completion: @escaping  (_ error: Error?, _ tweetList: [Tweet]?) -> ()) {
         var parameters: [String : Any] = [:]
         parameters["count"] = RESULT_LIMIT
-        //parameters["since_id"] = paging
+        if let paging = paging {
+            let sinceId = paging
+            parameters["max_id"] = sinceId
+        }
         _ = get("1.1/statuses/home_timeline.json", parameters: parameters, success: { (_: URLSessionDataTask, response: Any?) in
             if let response = response  {
                 var returnTweets = [Tweet]()

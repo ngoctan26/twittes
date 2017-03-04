@@ -21,6 +21,7 @@ class TweetMainInfoCell: UITableViewCell {
             nameLabel.text = tweet.user?.name
             sceenNameLabel.text = "@\((tweet.user?.screenName)!)"
             messageLabel.text = tweet.text
+            timeStampLabel.sizeToFit()
             timeStampLabel.text = tweet.createdAtString
             ImageUtils.loadImageFromUrlWithAnimate(imageView: avatarImg, url: tweet.user?.profileImageUrl)
         }

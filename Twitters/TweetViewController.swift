@@ -16,7 +16,7 @@ class TweetViewController: UIViewController {
     
     // Properties
     var selectedIndex: Int!
-    var currentPage = 0
+    var currentPage = "0"
     var isMoreDataLoading = false
     var tweets = [Tweet]()
     
@@ -34,7 +34,7 @@ class TweetViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initView()
-        loadData(paging: currentPage, isRefresh: false)
+        loadData(paging: nil, isRefresh: false)
     }
     
     func initView() {
@@ -53,22 +53,29 @@ class TweetViewController: UIViewController {
     }
     
     func refreshData() {
-        loadData(paging: currentPage, isRefresh: true)
+        loadData(paging: nil, isRefresh: true)
     }
     
-    func loadData(paging: Int, isRefresh: Bool) {
+    func loadData(paging: String?, isRefresh: Bool) {
         if !isRefresh {
             MBProgressHUD.showAdded(to: self.view, animated: true)
+        } else {
+            tweets.removeAll()
         }
         refreshController.endRefreshing()
-        TwitterClient.instance?.homeTimeline(paging: currentPage, completion: { (error, tweets) in
+        TwitterClient.instance?.homeTimeline(paging: paging, completion: { (error, tweets) in
             MBProgressHUD.hide(for: self.view, animated: true)
             self.isMoreDataLoading = false
             if error != nil {
                 return
             }
-            self.tweets = tweets!
-            self.currentPage += self.tweets.count
+            if paging != nil {
+                // Remove last item from preivous list when loading more
+                // because new list from server included this one
+                self.tweets.removeLast()
+            }
+            self.tweets += tweets!
+            self.currentPage = self.tweets.last!.id!
             self.tableView.reloadData()
         })
     }
