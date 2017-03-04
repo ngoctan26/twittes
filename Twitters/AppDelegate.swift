@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BDBOAuth1Manager
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Check that If there is logged in user
+        let token = SettingUtils.loadSetting(key: "save-token", defaultValue: nil)
+        if ((token as? String) != nil) {
+            TwitterClient.instance?.getUserInfo(completion: { (error, user) in
+                if (user == nil) {
+                    return
+                } else {
+                    self.moveToTweetVC()
+                }
+            })
+        }
         return true
     }
 
@@ -41,6 +52,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        print(url)
+        
+        
+        let requestToken = BDBOAuth1Credential(queryString: url.query)
+        
+        TwitterClient.instance?.fetchAccessToken(withPath: "oauth/access_token", method: "POST", requestToken: requestToken, success: { (response: BDBOAuth1Credential?) in
+            if let response = response {
+                print("access token = \(response.token)")
+                SettingUtils.saveSetting(configurations: ["save-token" : response.token])
+                TwitterClient.instance?.getUserInfo(completion: { (error, user) in
+                    if (user == nil) {
+                        return
+                    } else {
+                        self.moveToTweetVC()
+                    }
+                })
+            }
+        }, failure: { (error: Error?) in
+            print("\(error?.localizedDescription)")
+        })
+        
+        return true
+    }
 
+    func moveToTweetVC() {
+        // Move to tweet vc
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let tweetNavigationVC = storyboard.instantiateViewController(withIdentifier: "TweetController") as! UINavigationController
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.window?.rootViewController = tweetNavigationVC
+        self.window?.makeKeyAndVisible()
+    }
 }
 
