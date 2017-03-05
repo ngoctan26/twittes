@@ -30,8 +30,8 @@ class TweetDetailViewController: UIViewController {
     func initView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 200
         tableView.tableFooterView = UIView(frame: .zero)
     }
 
@@ -64,6 +64,10 @@ extension TweetDetailViewController: UITableViewDelegate, UITableViewDataSource 
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "tweetMainCell", for: indexPath) as! TweetMainInfoCell
             cell.tweet = tweetDetail
+            cell.avatarImg.layer.cornerRadius = 5
+            cell.avatarImg.layer.masksToBounds = true
+            cell.contentView.setNeedsLayout()
+            cell.contentView.layoutIfNeeded()
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "tweetLikeCell", for: indexPath) as! TweetLikeInfoCell
@@ -77,6 +81,11 @@ extension TweetDetailViewController: UITableViewDelegate, UITableViewDataSource 
                 cell.btnFav.setImage(#imageLiteral(resourceName: "ic_gold_star"), for: UIControlState.normal)
             } else {
                 cell.btnFav.setImage(#imageLiteral(resourceName: "ic_grey_star"), for: UIControlState.normal)
+            }
+            if tweetDetail.retweeted {
+                cell.btnRetweet.setImage(#imageLiteral(resourceName: "ic_retweet_green"), for: UIControlState.normal)
+            } else {
+                cell.btnRetweet.setImage(#imageLiteral(resourceName: "ic_retweet"), for: UIControlState.normal)
             }
             return cell
         default:

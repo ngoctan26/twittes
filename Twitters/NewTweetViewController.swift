@@ -52,6 +52,8 @@ class NewTweetViewController: UIViewController {
     }
     
     func initView() {
+        avatarImg.layer.cornerRadius = 5
+        avatarImg.layer.masksToBounds = true
         tweetTxField.delegate = self
         ImageUtils.loadImageFromUrlWithAnimate(imageView: avatarImg, url: user.profileImageUrl)
         nameLabel.text = user.name

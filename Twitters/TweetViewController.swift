@@ -45,6 +45,9 @@ class TweetViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         refreshController.addTarget(self, action:  #selector(refreshData), for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshController)
+        
+        // Add color for navigation bar
+        navigationController?.navigationBar.barTintColor = UIColor(red: 0, green: 239, blue: 255, alpha: 0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -118,6 +121,8 @@ extension TweetViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tweetCell", for: indexPath) as! TweetCell
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         if tweets.count > 0 {
+            cell.avatarImage.layer.cornerRadius = 5
+            cell.avatarImage.layer.masksToBounds = true
             cell.tweet = tweets[indexPath.row]
             cell.position = indexPath.row
             cell.vcDelegate = self
@@ -185,6 +190,39 @@ extension TweetViewController: NewTweetViewControllerDelegate, TweetCellDelegate
                 self.tableView.reloadRows(at: [IndexPath(row: position, section: 0)], with: UITableViewRowAnimation.automatic)
             })
         }
+    }
+    
+    func onRetweetBtnClicked(id: String, position: Int) {
+        let client = TwitterClient.instance!
+        let selectedTweet = tweets[position]
+        if !selectedTweet.retweeted {
+            client.retweet(id: selectedTweet.id!, failure: { (error) in
+                print("retweet \(selectedTweet.id) failed: \(error?.localizedDescription)")
+            }, success: { (newTweet) in
+                // Retweet success
+                print("Retweet id: \(selectedTweet.id) success")
+                client.findTweetById(id: selectedTweet.id!, success: { (updatedTweet) in
+                    self.tweets[position] = updatedTweet
+                    self.tableView.reloadRows(at: [IndexPath(row: position, section: 0)], with: UITableViewRowAnimation.automatic)
+                }, failure: { (error) in
+                    print("Find tweet \(selectedTweet.id) failed: \(error?.localizedDescription)")
+                })
+            })
+        } else {
+            client.unRetweet(id: selectedTweet.id!, failure: { (error) in
+                print("unretweet \(selectedTweet.id) failed: \(error?.localizedDescription)")
+            }, success: { (newTweet) in
+                // Unretweet success
+                print("Unretweet id: \(selectedTweet.id) success")
+                client.findTweetById(id: selectedTweet.id!, success: { (updatedTweet) in
+                    self.tweets[position] = updatedTweet
+                    self.tableView.reloadRows(at: [IndexPath(row: position, section: 0)], with: UITableViewRowAnimation.automatic)
+                }, failure: { (error) in
+                    print("Find tweet \(selectedTweet.id) failed: \(error?.localizedDescription)")
+                })
+            })
+        }
+        
     }
     
     func onTweetDetailUpdate(position: Int, updatedTweet: Tweet) {

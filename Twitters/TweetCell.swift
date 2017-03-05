@@ -10,6 +10,7 @@ import UIKit
 
 @objc protocol TweetCellDelegate {
     @objc optional func onFavouriteBtnClicked(id: String, position: Int)
+    @objc optional func onRetweetBtnClicked(id: String, position: Int)
 }
 
 class TweetCell: UITableViewCell {
@@ -21,6 +22,7 @@ class TweetCell: UITableViewCell {
     @IBOutlet weak var tweetLabel: UILabel!
     @IBOutlet weak var btnFavourite: UIButton!
     @IBOutlet weak var mediaImage: UIImageView!
+    @IBOutlet weak var btnRetweet: UIButton!
     
     @IBOutlet weak var imageHeightConstrain: NSLayoutConstraint!
     
@@ -39,6 +41,11 @@ class TweetCell: UITableViewCell {
             } else {
                 btnFavourite.setImage(#imageLiteral(resourceName: "ic_grey_star"), for: UIControlState.normal)
             }
+            if tweet.retweeted {
+                btnRetweet.setImage(#imageLiteral(resourceName: "ic_retweet_green"), for: UIControlState.normal)
+            } else {
+                btnRetweet.setImage(#imageLiteral(resourceName: "ic_retweet"), for: UIControlState.normal)
+            }
             if let mediaUrl = tweet.mediaUrl {
                 ImageUtils.loadImageFromUrlWithAnimate(imageView: mediaImage, url: mediaUrl)
             } else {
@@ -52,6 +59,7 @@ class TweetCell: UITableViewCell {
     }
     
     @IBAction func retweetBtnClicked(_ sender: UIButton) {
+        vcDelegate.onRetweetBtnClicked!(id: tweet.id!, position: position)
     }
     
     @IBAction func favBtnClicked(_ sender: UIButton) {

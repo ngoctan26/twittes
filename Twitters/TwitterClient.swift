@@ -106,4 +106,69 @@ class TwitterClient: BDBOAuth1SessionManager {
             failure(error)
         })
     }
+    
+    func retweet(id: String, failure: @escaping (_ error: Error?) -> (), success: @escaping (_ success: Tweet) -> ()) {
+        var parameters: [String : Any] = [:]
+        parameters["id"] = id + ".json"
+        _ = post("1.1/statuses/retweet/\(id).json", parameters: parameters, success: { (_: URLSessionDataTask, response: Any?) in
+            if let response = response  {
+                print("update favourite response: \(response)")
+                let tweetRaw = response as! NSDictionary
+                let tweet = Tweet(dictionary: tweetRaw)
+                success(tweet)
+            }
+            
+        }, failure: { (_: URLSessionDataTask?, error: Error) in
+            print("\(error.localizedDescription)")
+            failure(error)
+        })
+    }
+    
+    func unRetweet(id: String, failure: @escaping (_ error: Error?) -> (), success: @escaping (_ success: Tweet) -> ()) {
+        var parameters: [String : Any] = [:]
+        parameters["id"] = id + ".json"
+        _ = post("1.1/statuses/unretweet/\(id).json", parameters: parameters, success: { (_: URLSessionDataTask, response: Any?) in
+            if let response = response  {
+                print("update favourite response: \(response)")
+                let tweetRaw = response as! NSDictionary
+                let tweet = Tweet(dictionary: tweetRaw)
+                success(tweet)
+            }
+            
+        }, failure: { (_: URLSessionDataTask?, error: Error) in
+            print("\(error.localizedDescription)")
+            failure(error)
+        })
+    }
+    
+    func findTweetById(id: String, success: @escaping (Tweet) -> (), failure: @escaping (_ error: Error?) -> ()) {
+        _ = get("1.1/statuses/show.json", parameters: ["id":id], success: { (_:URLSessionDataTask, response:Any?) in
+            let tweet = Tweet(dictionary: response as! NSDictionary)
+            success(tweet)
+        }, failure: { (_:URLSessionDataTask?, error:Error?) in
+            failure(error)
+        })
+    }
+    
+    func fetchReplies(tweetUserName: String, tweetId: String, success: @escaping ([Tweet]) -> (), failure: @escaping (_ error: Error?) -> ()) {
+        var parameters: [String : Any] = [:]
+        parameters["q"] = "to:\(tweetUserName)"
+        parameters["since_id"] = tweetId
+        _ = get("1.1/search/tweets.json", parameters: parameters, success: { (_:URLSessionDataTask, response:Any?) in
+            if let response = response  {
+                var returnTweets = [Tweet]()
+                let tweets = response as! [NSDictionary]
+                for t in tweets {
+                    let id = t["in_reply_to_status_id_str"] as? String
+                    if id != nil && id == tweetId {
+                        let tweet = Tweet(dictionary: t)
+                        returnTweets.append(tweet)
+                    }
+                }
+                success(returnTweets)
+            }
+        }, failure: { (_:URLSessionDataTask?, error:Error?) in
+            failure(error)
+        })
+    }
 }

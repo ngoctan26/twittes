@@ -21,6 +21,7 @@ class Tweet: NSObject {
     var favCount = 0
     var favourited = false
     var id: String?
+    var retweeted = false
     
     
     init(dictionary: NSDictionary) {
@@ -32,6 +33,7 @@ class Tweet: NSObject {
         retweetCount = (dictionary["retweet_count"] as? Int)!
         favCount = (dictionary["favorite_count"] as? Int)!
         favourited = (dictionary["favorited"] as? Bool)!
+        retweeted = (dictionary["retweeted"] as? Bool)!
         if let media = (dictionary["entities"] as! NSDictionary)["media"] as? NSDictionary {
             if let mediaUrlRaw = media["media_url"] as? String {
                 mediaUrl = URL(string: mediaUrlRaw)

@@ -15,6 +15,8 @@ import UIKit
 class TweetActionCell: UITableViewCell {
     
     @IBOutlet weak var btnFav: UIButton!
+    @IBOutlet weak var btnRetweet: UIButton!
+    
     
     // Properties
     var vcDelegate: TweetActionCellDelegate!
