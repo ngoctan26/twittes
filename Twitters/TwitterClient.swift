@@ -79,9 +79,12 @@ class TwitterClient: BDBOAuth1SessionManager {
         _ = post("1.1/favorites/create.json", parameters: parameters, success: { (_: URLSessionDataTask, response: Any?) in
             if let response = response  {
                 print("update favourite response: \(response)")
-                let tweetRaw = response as! NSDictionary
-                let tweet = Tweet(dictionary: tweetRaw)
-                success(tweet)
+                self.findTweetById(id: id, success: { (updatedTweet) in
+                    success(updatedTweet)
+                }, failure: { (error) in
+                    failure(error)
+                })
+                
             }
             
         }, failure: { (_: URLSessionDataTask?, error: Error) in
@@ -96,9 +99,11 @@ class TwitterClient: BDBOAuth1SessionManager {
         _ = post("1.1/favorites/destroy.json", parameters: parameters, success: { (_: URLSessionDataTask, response: Any?) in
             if let response = response  {
                 print("update favourite response: \(response)")
-                let tweetRaw = response as! NSDictionary
-                let tweet = Tweet(dictionary: tweetRaw)
-                success(tweet)
+                self.findTweetById(id: id, success: { (updatedTweet) in
+                    success(updatedTweet)
+                }, failure: { (error) in
+                    failure(error)
+                })
             }
             
         }, failure: { (_: URLSessionDataTask?, error: Error) in

@@ -10,6 +10,7 @@ import UIKit
 
 @objc protocol TweetActionCellDelegate {
     @objc optional func onBtnFavouriteClicked()
+    @objc optional func onBtnRetweetClicked()
 }
 
 class TweetActionCell: UITableViewCell {
@@ -26,6 +27,7 @@ class TweetActionCell: UITableViewCell {
     
     
     @IBAction func retweetClicked(_ sender: Any) {
+        vcDelegate.onBtnRetweetClicked!()
     }
 
     @IBAction func favClicked(_ sender: Any) {

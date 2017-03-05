@@ -115,4 +115,37 @@ extension TweetDetailViewController: TweetActionCellDelegate {
             })
         }
     }
+    
+    func onBtnRetweetClicked() {
+        let client = TwitterClient.instance!
+        if !tweetDetail.retweeted {
+            client.retweet(id: tweetDetail.id!, failure: { (error) in
+                print("retweet \(self.tweetDetail.id) failed: \(error?.localizedDescription)")
+            }, success: { (newTweet) in
+                // Retweet success
+                print("Retweet id: \(self.tweetDetail.id) success")
+                client.findTweetById(id: self.tweetDetail.id!, success: { (updatedTweet) in
+                    self.tweetDetail = updatedTweet
+                    self.vcDelegate.onTweetDetailUpdate!(position: self.position, updatedTweet: updatedTweet)
+                    self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0), IndexPath(row: 2, section: 0)], with: UITableViewRowAnimation.automatic)
+                }, failure: { (error) in
+                    print("Find tweet \(self.tweetDetail.id) failed: \(error?.localizedDescription)")
+                })
+            })
+        } else {
+            client.unRetweet(id: tweetDetail.id!, failure: { (error) in
+                print("unretweet \(self.tweetDetail.id) failed: \(error?.localizedDescription)")
+            }, success: { (newTweet) in
+                // Unretweet success
+                print("Unretweet id: \(self.tweetDetail.id) success")
+                client.findTweetById(id: self.tweetDetail.id!, success: { (updatedTweet) in
+                    self.tweetDetail = updatedTweet
+                    self.vcDelegate.onTweetDetailUpdate!(position: self.position, updatedTweet: updatedTweet)
+                    self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0), IndexPath(row: 2, section: 0)], with: UITableViewRowAnimation.automatic)
+                }, failure: { (error) in
+                    print("Find tweet \(self.tweetDetail.id) failed: \(error?.localizedDescription)")
+                })
+            })
+        }
+    }
 }
